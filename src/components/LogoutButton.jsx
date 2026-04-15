@@ -1,9 +1,12 @@
 import { useNavigate } from "react-router-dom"
+import { useAuth } from "../context/AuthContext"
 
 function LogoutButton() {
   const navigate = useNavigate()
+  const { logout } = useAuth()
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await  logout()
     navigate("/login")
   }
 
@@ -20,5 +23,5 @@ function LogoutButton() {
   )
 }
 
-export default LogoutButton
+export default LogoutButton 
 //add logout confirmation dialog later

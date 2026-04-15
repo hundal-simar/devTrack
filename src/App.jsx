@@ -5,12 +5,14 @@ import Goals from "./pages/Goals"
 import Login from "./pages/Login"
 import Timer from "./pages/Timer"
 import Layout from "./components/Layout"
+import ProtectedRoute from "./components/ProtectedRoute"
 
 function App() {
   return (
     <Routes>
-      <Route element={<Layout />}>
-        <Route path="/" element={<Navigate to="/dashboard" />} />
+      <Route path='/login' element={<Login />} />
+      <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+        <Route index element={<Navigate to="/dashboard" />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dsa" element={<Dsa />} />
         <Route path="/goals" element={<Goals />} />

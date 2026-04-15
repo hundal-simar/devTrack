@@ -1,9 +1,17 @@
 import { NavLink } from "react-router-dom"
 import { useState } from "react"
 import LogoutButton from "./LogoutButton"
+import { useAuth } from "../context/AuthContext"
 
 function Sidebar() {
   const [isOpen, setIsOpen] = useState(false)
+  const { user } = useAuth()
+
+  const initials = user?.displayName
+    ? user.displayName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+    : user?.email?.[0].toUpperCase() ?? 'U'
+
+  const displayName = user?.displayName ?? user?.email ?? 'User'
 
   const links = [
     { path: "/dashboard", label: "Dashboard" },
@@ -72,9 +80,15 @@ function Sidebar() {
         </nav>
 
         {/* Logout */}
-        <div className="mt-auto">
-          <LogoutButton />
+        <div className="mt-auto flex flex-col gap-3">
+        <div className="flex items-center gap-2 px-1">
+          <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-xs font-medium text-indigo-700 shrink-0">
+            {initials}
+          </div>
+          <span className="text-sm text-gray-500 truncate">{displayName}</span>
         </div>
+        <LogoutButton />
+      </div>
       </aside>
     </>
   )
