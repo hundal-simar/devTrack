@@ -36,7 +36,7 @@ function DSA() {
   )
 
   return (
-    <div className="flex flex-col gap-5 max-w-4xl">
+    <div className="flex flex-col gap-5 mx-auto justify-center max-w-4xl">
 
       {/* Header */}
       <div className="flex items-start justify-between">
