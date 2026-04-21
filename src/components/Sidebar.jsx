@@ -18,6 +18,7 @@ function Sidebar() {
     { path: "/dsa", label: "DSA" },
     { path: "/goals", label: "Goals" },
     { path: "/timer", label: "Timer" },
+    { path: "/streaks", label: "Streaks"},
   ]
 
   return (

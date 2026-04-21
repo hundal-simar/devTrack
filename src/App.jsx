@@ -6,6 +6,7 @@ import Login from "./pages/Login"
 import Timer from "./pages/Timer"
 import Layout from "./components/Layout"
 import ProtectedRoute from "./components/ProtectedRoute"
+import Streaks from "./pages/Streaks"
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/dsa" element={<Dsa />} />
         <Route path="/goals" element={<Goals />} />
         <Route path="/timer" element={<Timer />} />
+        <Route path="/streaks" element={<Streaks/>} />
       </Route>
       <Route path="/login" element={<Login />} />
       
