@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useProblems, TOPICS, DIFFICULTIES } from '../hooks/useProblems'
+import { relativeTime } from '../utils/formatUtils'
 
 const difficultyStyle = (difficulty) => {
   if (difficulty === 'Easy')   return 'bg-green-50 text-green-700'
@@ -9,15 +10,7 @@ const difficultyStyle = (difficulty) => {
   return ''
 }
 
-const relativeTime = (timestamp) => {
-  if (!timestamp) return ''
-  const diffDays = Math.floor(
-    (new Date() - timestamp.toDate()) / (1000 * 60 * 60 * 24)
-  )
-  if (diffDays === 0) return 'today'
-  if (diffDays === 1) return 'yesterday'
-  return `${diffDays} days ago`
-}
+
 
 const filters = ['All', ...DIFFICULTIES]
 

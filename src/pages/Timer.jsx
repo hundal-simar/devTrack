@@ -1,5 +1,6 @@
 import { useTimer } from '../hooks/useTimer'
 import { useSessions } from '../hooks/useSessions'
+import { formatDuration } from '../utils/formatUtils'
 
 // HH:MM:SS — for the running clock display
 export const formatTime = (totalSeconds) => {
@@ -9,14 +10,7 @@ export const formatTime = (totalSeconds) => {
   return [h, m, s].map(v => String(v).padStart(2, '0')).join(':')
 }
 
-// Compact — for session durations like "1h 24m" or "45m"
-const formatDuration = (totalSeconds) => {
-  if (totalSeconds < 60)   return '0m'
-  const h = Math.floor(totalSeconds / 3600)
-  const m = Math.floor((totalSeconds % 3600) / 60)
-  if (h === 0) return `${m}m`
-  return m === 0 ? `${h}h` : `${h}h ${m}m`
-}
+
 
 const statusConfig = (seconds, isRunning) => {
   if (isRunning)    return { label: 'Running',  style: 'bg-indigo-50 text-indigo-700' }

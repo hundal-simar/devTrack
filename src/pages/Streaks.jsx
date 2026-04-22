@@ -1,11 +1,6 @@
 import { useStreak } from '../hooks/useStreak'
+import { squareStyle } from '../utils/streakUtils'
 
-const squareStyle = (day) => {
-  if (day.isToday && day.isActive) return 'bg-indigo-600 ring-2 ring-indigo-400 ring-offset-1'
-  if (day.isToday)                 return 'bg-indigo-200 ring-2 ring-indigo-300 ring-offset-1'
-  if (day.isActive)                return 'bg-indigo-400'
-  return 'bg-gray-100'
-}
 
 function Streaks() {
   const {

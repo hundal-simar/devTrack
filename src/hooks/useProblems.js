@@ -6,6 +6,7 @@ import {
 } from 'firebase/firestore'
 import { db } from '../firebase'
 import { useAuth } from '../context/AuthContext'
+import {dateString} from "../utils/streakUtils";
 
 export const TOPICS = [
   'Arrays', 'Strings', 'Trees', 'Graphs', 'DP',
@@ -41,6 +42,7 @@ export function useProblems() {
       name:       name.trim(),
       topic,
       difficulty,
+      date:    dateString(0),
       solvedAt:   serverTimestamp(),
     })
   }
@@ -61,6 +63,8 @@ export function useProblems() {
     }),
   [problems])
 
+  const todayCount = problems.filter(p => p.date === dateString(0)).length
+
   return {
     problems,
     loading,
@@ -68,5 +72,6 @@ export function useProblems() {
     deleteProblem,
     topicStats,
     totalSolved: problems.length,
+    todayCount,
   }
 }
