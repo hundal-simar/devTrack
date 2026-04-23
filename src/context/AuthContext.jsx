@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  updateProfile,
 } from 'firebase/auth'
 import { auth, googleProvider } from '../firebase'
 
@@ -31,9 +32,15 @@ export function AuthProvider({ children }) {
     return signInWithEmailAndPassword(auth, email, password)
   }
 
-  const registerWithEmail = (email, password) => {
-    return createUserWithEmailAndPassword(auth, email, password)
+  const registerWithEmail = async (email, password, name) => {
+  const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+  if (name?.trim()) {
+    await updateProfile(userCredential.user, {
+      displayName: name.trim(),
+    })
   }
+  return userCredential
+}
 
   const logout = () => {
     return signOut(auth)
@@ -49,13 +56,13 @@ export function AuthProvider({ children }) {
   }
 
   // Don't render children until Firebase has checked if a user is logged in
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <p className="text-gray-400 text-sm">Loading...</p>
-      </div>
-    )
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center bg-gray-50">
+  //       <p className="text-gray-400 text-sm">Loading...</p>
+  //     </div>
+  //   )
+  // }
 
   return (
     <AuthContext.Provider value={value}>

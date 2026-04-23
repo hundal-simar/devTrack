@@ -11,6 +11,7 @@ import {
   BarChart, Bar, XAxis, Tooltip,
   ResponsiveContainer, Cell,
 } from 'recharts'
+import SkeletonDashboard from '../components/skeletons/SkeletonDashboard'
 
 const getGreeting = () => {
   const h = new Date().getHours()

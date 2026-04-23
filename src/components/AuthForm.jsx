@@ -51,6 +51,26 @@ function AuthForm({
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
 
+          {isRegister && (
+              <div className="flex flex-col gap-1">
+               <input
+                type="text"
+                placeholder="Full name"
+                {...register('name', {
+                required: 'Please enter your name',
+                minLength: { value: 2, message: 'Name must be at least 2 characters' },
+                 })}
+                className={`w-full border rounded-lg px-3 py-2.5 text-sm outline-none focus:ring-2 transition
+                ${errors.name
+                 ? 'border-red-300 focus:ring-red-100'
+                : 'border-gray-200 focus:ring-indigo-200 focus:border-indigo-400'}`}
+              />
+            {errors.name && (
+            <p className="text-xs text-red-500 px-1">{errors.name.message}</p>
+             )}
+              </div>
+           )}
+
           {/* Email */}
           <div className="flex flex-col gap-1">
             <input

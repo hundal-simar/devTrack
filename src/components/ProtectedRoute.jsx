@@ -6,8 +6,12 @@ function ProtectedRoute({ children }) {
  
 
   if (loading) {
-    return <p>Loading...</p>
-  }
+  return (
+    <div className="h-screen flex items-center justify-center">
+      <div className="animate-spin h-6 w-6 border-2 border-gray-300 border-t-transparent rounded-full"></div>
+    </div>
+  )
+}
 
 
   if (!user) {

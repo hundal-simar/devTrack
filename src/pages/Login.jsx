@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
 import AuthForm from "../components/AuthForm"
+import { getAuthErrorMessage } from "../utils/authUtils"
 
 function Login() {
   const { loginWithGoogle, loginWithEmail, registerWithEmail } = useAuth()
@@ -18,7 +19,7 @@ function Login() {
       await loginWithGoogle()
       navigate("/dashboard")
     } catch (err) {
-      setFirebaseError("Google sign-in failed. Try again.")
+      setFirebaseError(getAuthErrorMessage(err.code))
     } finally {
       setLoading(false)
     }
@@ -30,22 +31,14 @@ function Login() {
       setLoading(true)
 
       if (isRegister) {
-        await registerWithEmail(data.email, data.password)
+        await registerWithEmail(data.email, data.password, data.name)
       } else {
         await loginWithEmail(data.email, data.password)
       }
 
       navigate("/dashboard")
     } catch (err) {
-      if (err.code === "auth/user-not-found")
-        setFirebaseError("No account found with this email.")
-      else if (err.code === "auth/wrong-password")
-        setFirebaseError("Incorrect password.")
-      else if (err.code === "auth/email-already-in-use")
-        setFirebaseError("Email already registered.")
-      else if (err.code === "auth/invalid-credential")
-        setFirebaseError("Invalid email or password.")
-      else setFirebaseError("Something went wrong. Try again.")
+      setFirebaseError(getAuthErrorMessage(err.code))
     } finally {
       setLoading(false)
     }
