@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useProblems, TOPICS, DIFFICULTIES } from '../hooks/useProblems'
 import { relativeTime } from '../utils/formatUtils'
+import SkeletonDsa from '../components/skeletons/SkeletonDsa'
+import EmptyState from '../components/EmptyState'
 
 const difficultyStyle = (difficulty) => {
   if (difficulty === 'Easy')   return 'bg-green-50 text-green-700'
@@ -15,18 +17,23 @@ const difficultyStyle = (difficulty) => {
 const filters = ['All', ...DIFFICULTIES]
 
 function DSA() {
-  const { problems, loading, addProblem, deleteProblem, topicStats, totalSolved } = useProblems()
+  const { problems, problemsloading, addProblem, deleteProblem, topicStats, totalSolved } = useProblems()
   const [activeFilter, setActiveFilter] = useState('All')
-  const { register, handleSubmit, reset, formState: { errors } } = useForm()
+  const { register, handleSubmit, reset,setFocus, formState: { errors } } = useForm()
 
   const onSubmit = async (data) => {
     await addProblem(data)
     reset()
+    setFocus('name')
   }
 
   const filteredProblems = problems.filter(p =>
     activeFilter === 'All' ? true : p.difficulty === activeFilter
   )
+
+  if(problemsloading) {
+    return <SkeletonDsa />
+  }
 
   return (
     <div className="flex flex-col gap-5 mx-auto justify-center max-w-4xl">
@@ -159,22 +166,19 @@ function DSA() {
           </div>
         </div>
 
-        {/* Loading */}
-        {loading && (
-          <p className="px-5 py-8 text-center text-sm text-gray-400">Loading problems...</p>
-        )}
+       
 
         {/* Empty state */}
-        {!loading && filteredProblems.length === 0 && (
-          <p className="px-5 py-10 text-center text-sm text-gray-400">
-            {activeFilter === 'All'
-              ? 'No problems logged yet — log your first one above!'
-              : `No ${activeFilter} problems logged yet`}
-          </p>
+        {!problemsloading && filteredProblems.length === 0 && (
+          <EmptyState
+            icon="📭"
+            title="No problems logged"
+            subtitle="Start tracking your DSA journey by logging your first problem"
+            action={{ label: 'Log a problem', onClick: () => setFocus('name') }}   />
         )}
 
         {/* Problem rows */}
-        {!loading && filteredProblems.map(problem => (
+        {!problemsloading && filteredProblems.map(problem => (
           <div
             key={problem.id}
             className="flex items-center justify-between px-5 py-3.5 border-b border-gray-50 last:border-b-0 group hover:bg-gray-50 transition-colors"

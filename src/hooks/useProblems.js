@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import {
   collection, addDoc, deleteDoc,
   doc, query, orderBy, limit,
@@ -20,7 +20,7 @@ const TARGET_PER_TOPIC = 30
 export function useProblems() {
   const { user } = useAuth()
   const [problems, setProblems] = useState([])
-  const [loading, setLoading]   = useState(true)
+  const [problemsloading, setProblemsLoading]   = useState(true)
 
   useEffect(() => {
     if (!user) return
@@ -30,13 +30,13 @@ export function useProblems() {
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       setProblems(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
-      setLoading(false)
+      setProblemsLoading(false)
     })
 
     return unsubscribe
   }, [user])
 
-  const addProblem = async ({ name, topic, difficulty }) => {
+  const addProblem = useCallback(async ({ name, topic, difficulty }) => {
     if (!user) return
     await addDoc(collection(db, 'users', user.uid, 'problems'), {
       name:       name.trim(),
@@ -45,11 +45,11 @@ export function useProblems() {
       date:    dateString(0),
       solvedAt:   serverTimestamp(),
     })
-  }
+  }, [user])
 
-  const deleteProblem = async (id) => {
+  const deleteProblem = useCallback(async (id) => {
     await deleteDoc(doc(db, 'users', user.uid, 'problems', id))
-  }
+  }, [user])
 
   // Only recomputes when problems array changes
   const topicStats = useMemo(() =>
@@ -67,7 +67,7 @@ export function useProblems() {
 
   return {
     problems,
-    loading,
+    problemsloading,
     addProblem,
     deleteProblem,
     topicStats,

@@ -14,11 +14,11 @@ function Sidebar() {
   const displayName = user?.displayName ?? user?.email ?? 'User'
 
   const links = [
-    { path: "/dashboard", label: "Dashboard" },
-    { path: "/dsa", label: "DSA" },
-    { path: "/goals", label: "Goals" },
-    { path: "/timer", label: "Timer" },
-    { path: "/streaks", label: "Streaks"},
+  { path: '/dashboard', label: 'Dashboard', icon: '⊞' },
+  { path: '/dsa',       label: 'DSA',       icon: '💻' },
+  { path: '/goals',     label: 'Goals',     icon: '🎯' },
+  { path: '/timer',     label: 'Timer',     icon: '⏱' },
+  { path: '/streaks',   label: 'Streaks',   icon: '🔥' },
   ]
 
   return (
@@ -75,7 +75,7 @@ function Sidebar() {
                 }`
               }
             >
-               {link.label}
+               {link.icon} {link.label}
             </NavLink>
           ))}
         </nav>

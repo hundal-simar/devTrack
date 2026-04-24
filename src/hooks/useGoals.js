@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
   collection,
   addDoc,
@@ -20,7 +20,7 @@ const getTodayString = () => new Date().toISOString().split('T')[0]
 export default function useGoals() {
   const { user } = useAuth()
   const [goals, setGoals]     = useState([])
-  const [loading, setLoading] = useState(true)
+  const [goalsloading, setGoalsLoading] = useState(true)
 
   // Real-time listener — updates goals instantly when Firestore changes
   useEffect(() => {
@@ -39,32 +39,30 @@ export default function useGoals() {
         ...doc.data(),
       }))
       setGoals(data)
-      setLoading(false)
+      setGoalsLoading(false)
     })
 
     return unsubscribe // cleanup listener on unmount
   }, [user])
 
-  const addGoal = async (text) => {
-    if (!user || !text.trim()) return
-    const goalsRef = collection(db, 'users', user.uid, 'goals')
-    await addDoc(goalsRef, {
-      text: text.trim(),
-      done: false,
-      date: getTodayString(),
-      createdAt: serverTimestamp(),
-    })
-  }
+  const addGoal = useCallback(async (text) => {
+  if (!user || !text.trim()) return
+  await addDoc(collection(db, 'users', user.uid, 'goals'), {
+    text: text.trim(),
+    done: false,
+    date: getTodayString(),
+    createdAt: serverTimestamp(),
+  })
+}, [user])
 
-  const toggleGoal = async (goalId, currentDone) => {
-    const goalRef = doc(db, 'users', user.uid, 'goals', goalId)
-    await updateDoc(goalRef, { done: !currentDone })
-  }
+const toggleGoal = useCallback(async (goalId, currentDone) => {
+  const goalRef = doc(db, 'users', user.uid, 'goals', goalId)
+  await updateDoc(goalRef, { done: !currentDone })
+}, [user])
 
-  const deleteGoal = async (goalId) => {
-    const goalRef = doc(db, 'users', user.uid, 'goals', goalId)
-    await deleteDoc(goalRef)
-  }
+const deleteGoal = useCallback(async (goalId) => {
+  await deleteDoc(doc(db, 'users', user.uid, 'goals', goalId))
+}, [user])
 
   // Derived values — computed from goals array
   const totalGoals     = goals.length
@@ -73,7 +71,7 @@ export default function useGoals() {
 
   return {
     goals,
-    loading,
+    goalsloading,
     addGoal,
     toggleGoal,
     deleteGoal,

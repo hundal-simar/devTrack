@@ -1,6 +1,7 @@
 import { useTimer } from '../hooks/useTimer'
 import { useSessions } from '../hooks/useSessions'
 import { formatDuration } from '../utils/formatUtils'
+import EmptyState from '../components/EmptyState'
 
 // HH:MM:SS — for the running clock display
 export const formatTime = (totalSeconds) => {
@@ -149,9 +150,11 @@ function Timer() {
         )}
 
         {!loading && todaySessions.length === 0 && (
-          <p className="px-5 py-10 text-center text-sm text-gray-400">
-            No sessions yet — start the timer above!
-          </p>
+          <EmptyState
+            icon="⏱️"
+            title="No sessions today"
+            subtitle="Start the timer above to begin tracking your study time"
+          />
         )}
 
         {!loading && todaySessions.map((session, index) => (

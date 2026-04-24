@@ -1,5 +1,7 @@
 import { useStreak } from '../hooks/useStreak'
 import { squareStyle } from '../utils/streakUtils'
+import SkeletonStreaks from '../components/skeletons/SkeletonStreaks'
+import EmptyState from '../components/EmptyState'
 
 
 function Streaks() {
@@ -13,7 +15,7 @@ function Streaks() {
   } = useStreak()
 
   if (loading) {
-    return <p className="text-sm text-gray-400">Loading streaks...</p>
+    return <SkeletonStreaks />
   }
 
   return (
@@ -119,12 +121,12 @@ function Streaks() {
 
       {/* Empty state if no sessions at all */}
       {activeLast30 === 0 && (
-        <div className="bg-indigo-50 rounded-xl border border-indigo-100 p-5 text-center">
-          <p className="text-sm font-medium text-indigo-700 mb-1">No activity yet</p>
-          <p className="text-xs text-indigo-500">
-            Start the study timer to begin your streak!
-          </p>
-        </div>
+        <EmptyState
+          icon="📉"
+          title="No activity in the last 30 days"
+          subtitle="Consistency is key! Start a streak by studying today."
+          action={{ label: 'Start studying', to: '/timer' }}
+        />
       )}
 
     </div>

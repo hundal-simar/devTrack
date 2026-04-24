@@ -55,14 +55,14 @@ export function AuthProvider({ children }) {
     logout,
   }
 
-  // Don't render children until Firebase has checked if a user is logged in
-  // if (loading) {
-  //   return (
-  //     <div className="min-h-screen flex items-center justify-center bg-gray-50">
-  //       <p className="text-gray-400 text-sm">Loading...</p>
-  //     </div>
-  //   )
-  // }
+  //Don't render children until Firebase has checked if a user is logged in
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+      <div className="animate-spin h-6 w-6 border-2 border-gray-300 border-t-transparent rounded-full"></div>
+    </div>
+    )
+  }
 
   return (
     <AuthContext.Provider value={value}>

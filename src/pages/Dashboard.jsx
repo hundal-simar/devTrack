@@ -12,6 +12,7 @@ import {
   ResponsiveContainer, Cell,
 } from 'recharts'
 import SkeletonDashboard from '../components/skeletons/SkeletonDashboard'
+import EmptyState from '../components/EmptyState'
 
 const getGreeting = () => {
   const h = new Date().getHours()
@@ -55,14 +56,18 @@ export const squareStyleLocal = (day) => {
 
 function Dashboard() {
   const { user }                                            = useAuth()
-  const { goals, completedGoals, totalGoals }               = useGoals()
-  const { problems, totalSolved, todayCount }               = useProblems()
+  const { goals, completedGoals, totalGoals, goalsloading }               = useGoals()
+  const { problems, totalSolved, todayCount , problemsloading}               = useProblems()
   const { sessions, todayTotal, todaySessions }             = useSessions()
-  const { currentStreak, calendarDays }                     = useStreak()
+  const { currentStreak, calendarDays, loading }                     = useStreak()
 
   const firstName  = user?.displayName?.split(' ')[0] ?? 'there'
   const chartData  = buildWeeklyChartData(sessions)
   const recentFour = problems.slice(0, 4)
+
+  if (loading || goalsloading || problemsloading) {
+    return <SkeletonDashboard />
+  }
 
   return (
     <div className="flex flex-col gap-5 mx-auto max-w-4xl justify-center">
@@ -181,10 +186,12 @@ function Dashboard() {
           </div>
 
           {goals.length === 0 ? (
-            <p className="text-xs text-gray-400 py-4 text-center">
-              No goals yet —{' '}
-              <Link to="/goals" className="text-indigo-500 hover:underline">add some</Link>
-            </p>
+            <EmptyState
+             icon="🎯"
+             title="No goals set"
+             subtitle="Add goals for today"
+             action={{ label: 'Set goals', to: '/goals' }}
+             />
           ) : (
             <div className="flex flex-col gap-0">
               {goals.slice(0, 5).map(goal => (
@@ -217,10 +224,12 @@ function Dashboard() {
           </div>
 
           {recentFour.length === 0 ? (
-            <p className="text-xs text-gray-400 py-4 text-center">
-              No problems yet —{' '}
-              <Link to="/dsa" className="text-indigo-500 hover:underline">log one</Link>
-            </p>
+            <EmptyState
+              icon="🧩"
+              title="No problems logged"
+              subtitle="Start tracking your DSA journey by logging your first problem"
+              action={{ label: 'Log a problem', to: '/dsa' }}
+            />
           ) : (
             <div className="flex flex-col">
               {recentFour.map(problem => (

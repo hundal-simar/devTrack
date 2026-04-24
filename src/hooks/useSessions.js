@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo,useCallback } from 'react'
 import {
   collection, addDoc, query,
   orderBy, onSnapshot, serverTimestamp,
@@ -33,14 +33,14 @@ export function useSessions() {
     return unsubscribe
   }, [user])
 
-  const saveSession = async (seconds, startedAt) => {
+  const saveSession = useCallback(async (seconds, startedAt) => {
     if (!user || seconds < 10) return // don't save sessions under 10 seconds
     await addDoc(collection(db, 'users', user.uid, 'sessions'), {
       duration:  seconds,
       startedAt: serverTimestamp(),
       date:      getTodayString(),
     })
-  }
+  }, [user])
 
   const todayString   = getTodayString()
   const weekAgoString = getWeekAgoString()

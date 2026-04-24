@@ -1,5 +1,6 @@
 import Sidebar from "./Sidebar"
 import { Outlet } from "react-router-dom"
+import ErrorBoundary from "./ErrorBoundary"
 
 function Layout() {
   return (
@@ -11,8 +12,10 @@ function Layout() {
       </div>
 
       {/* Main */}
-      <main className="flex-1 p-4 sm:p-6 bg-slate-100">
-        <Outlet />
+      <main className="page-enter flex-1 p-4 sm:p-6 bg-slate-100">
+        <ErrorBoundary>
+          <Outlet />
+        </ErrorBoundary>
       </main>
 
     </div>

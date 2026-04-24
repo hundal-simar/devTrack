@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useState} from 'react'
 import { useForm } from 'react-hook-form'
 import useGoals from '../hooks/useGoals'
+import SkeletonGoals from '../components/skeletons/SkeletonGoals'
+import EmptyState from '../components/EmptyState'
 
 const filters = ['All', 'Pending', 'Done']
 
@@ -14,7 +16,7 @@ const getTodayFormatted = () =>
 function Goals() {
   const {
     goals,
-    loading,
+    goalsloading,
     addGoal,
     toggleGoal,
     deleteGoal,
@@ -24,7 +26,8 @@ function Goals() {
   } = useGoals()
 
   const [activeFilter, setActiveFilter] = useState('All')
-  const { register, handleSubmit, reset, formState: { errors } } = useForm()
+  const { register, handleSubmit, reset,setFocus, formState: { errors } } = useForm()
+ 
 
   const onSubmit = async (data) => {
     await addGoal(data.goal)
@@ -43,6 +46,10 @@ function Goals() {
     if (remaining === 0) return 'All done! Great work today!'
     if (remaining === 1) return '1 goal remaining — almost there!'
     return `${remaining} goals remaining — keep going!`
+  }
+
+  if(goalsloading) {
+    return <SkeletonGoals />
   }
 
   return (
@@ -135,26 +142,19 @@ function Goals() {
           </div>
         </div>
 
-        {/* Loading */}
-        {loading && (
-          <div className="px-5 py-8 text-center text-sm text-slate-400">
-            Loading goals...
-          </div>
-        )}
-
+        
         {/* Empty */}
-        {!loading && filteredGoals.length === 0 && (
-          <div className="px-5 py-10 text-center">
-            <p className="text-sm text-slate-400">
-              {activeFilter === 'All'
-                ? "No goals yet — add one above!"
-                : `No ${activeFilter.toLowerCase()} goals`}
-            </p>
-          </div>
-        )}
+        {!goalsloading && filteredGoals.length === 0 && (
+         <EmptyState
+           icon="🎯"
+           title={activeFilter === 'All' ? 'No goals yet' : `No ${activeFilter.toLowerCase()} goals`}
+           subtitle={activeFilter === 'All' ? 'Set your intentions for today' : undefined}
+           action={activeFilter === 'All' ? { label: 'Add your first goal', onClick: () => setFocus('goal') } : undefined}
+          />
+          )}
 
         {/* Goals */}
-        {!loading && filteredGoals.map((goal) => (
+        {!goalsloading && filteredGoals.map((goal) => (
           <div
             key={goal.id}
             className="flex items-center gap-3 px-4 sm:px-5 py-3 border-b border-slate-100 last:border-b-0 group hover:bg-slate-100 transition-colors"
