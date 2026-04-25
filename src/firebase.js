@@ -14,8 +14,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 
-console.log("API Key:", firebaseConfig.apiKey) // Check
-console.log(import.meta.env) // Check all env vars
+ 
 
 export const auth = getAuth(app)
 export const googleProvider = new GoogleAuthProvider()
