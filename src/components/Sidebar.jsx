@@ -14,20 +14,20 @@ function Sidebar() {
   const displayName = user?.displayName ?? user?.email ?? 'User'
 
   const links = [
-  { path: '/dashboard', label: 'Dashboard', icon: '⊞' },
-  { path: '/dsa',       label: 'DSA',       icon: '💻' },
-  { path: '/goals',     label: 'Goals',     icon: '🎯' },
-  { path: '/timer',     label: 'Timer',     icon: '⏱' },
-  { path: '/streaks',   label: 'Streaks',   icon: '🔥' },
+    { path: '/dashboard', label: 'Dashboard', icon: '⊞' },
+    { path: '/dsa',       label: 'DSA',       icon: '💻' },
+    { path: '/goals',     label: 'Goals',     icon: '🎯' },
+    { path: '/timer',     label: 'Timer',     icon: '⏱' },
+    { path: '/streaks',   label: 'Streaks',   icon: '🔥' },
   ]
 
   return (
     <>
       {/* Mobile Top Bar */}
-      <div className="md:hidden flex justify-between items-center p-4 bg-[#0f172a] text-white">
-        {/* <h1 className="font-semibold">Navigate</h1> */}
+      <div className="md:hidden fixed top-0 left-0 w-full z-40 flex justify-between items-center p-4  text-white">
         <button onClick={() => setIsOpen(true)}>☰</button>
       </div>
+      
 
       {/* Overlay */}
       {isOpen && (
@@ -39,19 +39,14 @@ function Sidebar() {
 
       {/* Sidebar */}
       <aside
-        className={` top-0 left-0 h-screen w-64 z-50
+        className={`fixed top-0 left-0 h-screen w-64 z-50
         bg-[#0f172a] text-[#e2e8f0]
-        p-5 flex flex-col
+        p-5 pt-16 flex flex-col
         transform ${isOpen ? "translate-x-0" : "-translate-x-full"}
         md:translate-x-0 transition-transform duration-300`}
       >
         {/* Header */}
         <div className="flex justify-end items-center mb-6">
-          {/* <div className="bg-[#0ea5e9] px-4 py-2 rounded-lg flex items-center gap-2">
-             <span className="font-medium">Navigate</span>
-          </div> */}
-
-          {/* Close button */}
           <button
             className="md:hidden text-xl text-[#94a3b8]"
             onClick={() => setIsOpen(false)}
@@ -75,26 +70,24 @@ function Sidebar() {
                 }`
               }
             >
-               {link.icon} {link.label}
+              {link.icon} {link.label}
             </NavLink>
           ))}
         </nav>
 
         {/* Logout */}
         <div className="mt-auto flex flex-col gap-3">
-        <div className="flex items-center gap-2 px-1">
-          <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-xs font-medium text-indigo-700 shrink-0">
-            {initials}
+          <div className="flex items-center gap-2 px-1">
+            <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-xs font-medium text-indigo-700 shrink-0">
+              {initials}
+            </div>
+            <span className="text-sm text-gray-500 truncate">{displayName}</span>
           </div>
-          <span className="text-sm text-gray-500 truncate">{displayName}</span>
+          <LogoutButton />
         </div>
-        <LogoutButton />
-      </div>
       </aside>
     </>
   )
 }
 
 export default Sidebar
-
-//to add logo at top userinfo and other stuff later

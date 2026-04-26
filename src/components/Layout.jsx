@@ -7,7 +7,7 @@ function Layout() {
     <div className="flex min-h-screen bg-white text-slate-900">
 
       {/* Sidebar */}
-      <div className="hidden md:block w-64 shrink-0">
+      <div className=" md:block md:w-64 md:shrink-0">
         <Sidebar />
       </div>
 
