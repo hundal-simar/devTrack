@@ -2,28 +2,14 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
 import AuthForm from "../components/AuthForm"
-import { getAuthErrorMessage } from "../utils/authUtils"
 
 function Login() {
-  const { loginWithGoogle, loginWithEmail, registerWithEmail } = useAuth()
+  const { loginWithEmail, registerWithEmail } = useAuth()
   const navigate = useNavigate()
 
   const [isRegister, setIsRegister] = useState(false)
   const [firebaseError, setFirebaseError] = useState("")
   const [loading, setLoading] = useState(false)
-
-  const handleGoogleLogin = async () => {
-    try {
-      setFirebaseError("")
-      setLoading(true)
-      await loginWithGoogle()
-      navigate("/dashboard")
-    } catch (err) {
-      setFirebaseError(getAuthErrorMessage(err.code))
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const onSubmit = async (data) => {
     try {
@@ -38,7 +24,7 @@ function Login() {
 
       navigate("/dashboard")
     } catch (err) {
-      setFirebaseError(getAuthErrorMessage(err.code))
+      setFirebaseError(err.message || "Authentication failed")
     } finally {
       setLoading(false)
     }
@@ -56,7 +42,6 @@ function Login() {
       loading={loading}
       firebaseError={firebaseError}
       onToggle={handleToggleMode}
-      onGoogleLogin={handleGoogleLogin}
     />
   )
 }

@@ -7,8 +7,9 @@ export const formatDuration = (totalSeconds) => {
 }
 export const relativeTime = (timestamp) => {
   if (!timestamp) return ''
+  const dateVal = typeof timestamp.toDate === 'function' ? timestamp.toDate() : new Date(timestamp)
   const diffDays = Math.floor(
-    (new Date() - timestamp.toDate()) / (1000 * 60 * 60 * 24)
+    (new Date() - dateVal) / (1000 * 60 * 60 * 24)
   )
   if (diffDays === 0) return 'today'
   if (diffDays === 1) return 'yesterday'

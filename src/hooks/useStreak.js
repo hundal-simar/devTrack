@@ -1,38 +1,56 @@
-import { useMemo } from 'react'
-import { useSessions } from './useSessions'
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import api from '../utils/api';
+import { useAuth } from '../context/AuthContext';
 import {
   dateString,
-  calculateStreak,
-  calculateLongestStreak,
   buildCalendarDays,
   buildWeeks,
-} from '../utils/streakUtils'
+} from '../utils/streakUtils';
 
 export function useStreak() {
-  const { sessions, loading } = useSessions()
+  const { user } = useAuth();
+  const [streakData, setStreakData] = useState({ currentStreak: 0, longestStreak: 0, activityLog: [] });
+  const [loading, setLoading] = useState(true);
 
-  // Set of all dates that have at least one session
+  // Fetch streak info from Express server
+  const fetchStreak = useCallback(async () => {
+    if (!user) return;
+    try {
+      setLoading(true);
+      const data = await api.get('/streaks');
+      setStreakData(data);
+    } catch (error) {
+      console.error('Error fetching streak data:', error.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [user]);
+
+  // Load streak details on init
+  useEffect(() => {
+    fetchStreak();
+  }, [fetchStreak]);
+
+  // Map dates in activityLog to YYYY-MM-DD set for UI grid renderer
   const activeDateSet = useMemo(() =>
-    new Set(sessions.map(s => s.date))
-  , [sessions])
+    new Set(streakData.activityLog.map((d) => new Date(d).toISOString().split('T')[0]))
+  , [streakData.activityLog]);
 
-  // Active days in the last 30 only
   const activeLast30 = useMemo(() => {
-    const thirtyDaysAgo = dateString(29)
-    return [...activeDateSet].filter(d => d >= thirtyDaysAgo).length
-  }, [activeDateSet])
+    const thirtyDaysAgo = dateString(29);
+    return [...activeDateSet].filter((d) => d >= thirtyDaysAgo).length;
+  }, [activeDateSet]);
 
-  const currentStreak  = useMemo(() => calculateStreak(activeDateSet),        [activeDateSet])
-  const longestStreak  = useMemo(() => calculateLongestStreak(activeDateSet),  [activeDateSet])
-  const calendarDays   = useMemo(() => buildCalendarDays(activeDateSet),       [activeDateSet])
-  const weeklyBreakdown = useMemo(() => buildWeeks(activeDateSet),             [activeDateSet])
+  const calendarDays = useMemo(() => buildCalendarDays(activeDateSet), [activeDateSet]);
+  const weeklyBreakdown = useMemo(() => buildWeeks(activeDateSet), [activeDateSet]);
 
   return {
     loading,
-    currentStreak,
-    longestStreak,
+    currentStreak: streakData.currentStreak,
+    longestStreak: streakData.longestStreak,
     activeLast30,
     calendarDays,
     weeklyBreakdown,
-  }
+    refetchStreak: fetchStreak,
+  };
 }

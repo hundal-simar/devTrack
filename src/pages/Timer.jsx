@@ -183,10 +183,10 @@ function Timer() {
             <div className="flex-1 min-w-0">
               <p className="text-sm text-gray-700 truncate">
                 Started{' '}
-                {session.startedAt?.toDate().toLocaleTimeString('en-US', {
+                {session.rawDate ? new Date(session.rawDate).toLocaleTimeString('en-US', {
                   hour: 'numeric',
                   minute: '2-digit',
-                })}
+                }) : 'Unknown'}
               </p>
               <p className="text-xs text-gray-400">
                 {formatDuration(session.duration)}
